@@ -1,0 +1,87 @@
+---
+name: TLSAssistant
+version: 1.0.0
+one-apps_version: 7.0.0-0
+publisher: Fondazione Bruno Kessler
+publisher_email: tlsa-cs@fbk.eu
+creation_time: 1791466200
+description: |-
+  [TLSAssistant](https://st.fbk.eu/tools/TLSAssistant) is an open-source modular framework capable of
+  identifying a wide range of TLS vulnerabilities and assessing
+  compliance with multiple guidelines. Its actionable report can
+  assist the user in correctly and easily fixing their configurations.
+
+  This appliance wraps the official `stfbk/tlsassistant` Docker container,
+  automating the execution of TLS scans and securely delivering the resulting
+  PDF reports to any S3-compatible object storage to be easily retrieved.
+
+  TLSAssistant on OpenNebula can provide Public Administrations with an
+  automated, sovereign cloud solution to evaluate compliance with national
+  and international cybersecurity guidelines.
+  
+  **NOTE**: this appliance is highly configurable and requires the user
+  to set parameters on instantiation. Please refer to the [documentation](https://github.com/OpenNebula/marketplace-community/blob/master/appliances/tlsassistant/README.md).
+
+  For detailed information on the analysis engine, you can head to our repository on [GitHub](https://github.com/stfbk/tlsassistant).
+short_description: TLSAssistant is an opensource, modular extensive framework that combines state-of-the-art TLS analyzers with a report system that suggests appropriate mitigations and shows the full set of viable attacks.
+tags:
+- tlsassistant
+- tls
+- docker
+- ubuntu
+- container
+format: qcow2
+os-id: Ubuntu
+os-release: '22.04'
+os-arch: x86_64
+hypervisor: KVM
+opennebula_version: 7.4
+opennebula_template:
+  context:
+    network: 'YES'
+    token: 'YES'
+    ssh_public_key: $USER[SSH_PUBLIC_KEY]
+    set_hostname: $USER[SET_HOSTNAME]
+    oneapp_scan_endpoint_target_url: $USER[ONEAPP_SCAN_ENDPOINT_TARGET_URL]
+    oneapp_scan_endpoint_resolve_ip: $USER[ONEAPP_SCAN_ENDPOINT_RESOLVE_IP]
+    oneapp_scan_vuln_modules: $USER[ONEAPP_SCAN_VULN_MODULES]
+    oneapp_storage_s3_endpoint: $USER[ONEAPP_STORAGE_S3_ENDPOINT]
+    oneapp_storage_s3_bucket: $USER[ONEAPP_STORAGE_S3_BUCKET]
+    oneapp_storage_s3_access_key: $USER[ONEAPP_STORAGE_S3_ACCESS_KEY]
+    oneapp_storage_s3_secret_key: $USER[ONEAPP_STORAGE_S3_SECRET_KEY]
+    oneapp_storage_s3_region: $USER[ONEAPP_STORAGE_S3_REGION]
+    oneapp_storage_s3_custom_host_ip: $USER[ONEAPP_STORAGE_S3_CUSTOM_HOST_IP]
+    oneapp_compliance_config_enabled: $USER[ONEAPP_COMPLIANCE_CONFIG_ENABLED]
+    oneapp_compliance_config_comparemany: $USER[ONEAPP_COMPLIANCE_CONFIG_COMPAREMANY]
+    oneapp_compliance_config_guidelines_one: $USER[ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_ONE]
+    oneapp_compliance_config_guidelines_many: $USER[ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_MANY]
+    oneapp_compliance_config_guidelines_filename: $USER[ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_FILENAME]
+    oneapp_compliance_config_guidelines_custom: $USER[ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_CUSTOM]
+    oneapp_compliance_extra_security: $USER[ONEAPP_COMPLIANCE_EXTRA_SECURITY]
+    oneapp_compliance_extra_openssl_version: $USER[ONEAPP_COMPLIANCE_EXTRA_OPENSSL_VERSION]
+  cpu: '4'
+  memory: '4096'
+  disk:
+    image: $FILE[IMAGE_ID]
+    image_uname: $USER[IMAGE_UNAME]
+  name: TLSAssistant
+  user_inputs:
+    - ONEAPP_SCAN_ENDPOINT_TARGET_URL: "M|text|URL or IP (and port) to scan (opennebula.io:443)||opennebula.io"
+    - ONEAPP_SCAN_ENDPOINT_RESOLVE_IP: "O|boolean|Add --resolve-ip flag to pre-resolve the URL||NO"
+    - ONEAPP_SCAN_VULN_MODULES: "O|list-multiple|Vulnerability modules to run (Select 'none' for compliance-only scans, 'all' runs all the modules)|all,none,3shake,alpaca,beast,breach,ccs_injection,certificate_transparency,crime,drown,freak,heartbleed,hsts_preloading,hsts_set,https_enforced,logjam,lucky13,mitzvah,nomore,padding_oracle,pfs,raccoon,renegotiation,robot,sloth,sslpoodle,sweet32,ticketbleed,tlspoodle|all"
+    - ONEAPP_STORAGE_S3_ENDPOINT: "M|text|S3 API Endpoint||"
+    - ONEAPP_STORAGE_S3_BUCKET: "M|text|S3 Bucket Name||tls-reports"
+    - ONEAPP_STORAGE_S3_ACCESS_KEY: "M|text|S3 Access Key||"
+    - ONEAPP_STORAGE_S3_SECRET_KEY: "M|password|S3 Secret Key||"
+    - ONEAPP_STORAGE_S3_REGION: "O|text|S3 Region for URL signature||us-east-1"
+    - ONEAPP_STORAGE_S3_CUSTOM_HOST_IP: "O|text|S3 Custom Host IP||"
+    - ONEAPP_COMPLIANCE_CONFIG_ENABLED: "M|boolean|Enable compliance scan||NO"
+    - ONEAPP_COMPLIANCE_CONFIG_COMPAREMANY: "M|boolean|Compare agains multiple guidelines||NO"
+    - ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_ONE: "O|list|[ONE] Single guideline to evaluate agains|NIST,NIST-CUSTOMERFACING-PREFERRED2,NIST-CUSTOMERFACING-PREFERRED1,NIST-CUSTOMERFACING-PREFERRED3,NIST-GOVERNMENTONLY-PREFERRED2,NIST-GOVERNMENTONLY-PREFERRED1,NIST-GOVERNMENTONLY-PREFERRED3,BSI,BSI-CUSTOMERFACING-FEDERALREQ-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,BSI-CUSTOMERFACING-PREFERRED2-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,BSI-CUSTOMERFACING-PREFERRED1-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,BSI-FEDERALAPPLICATIONS-FEDERALREQ-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,BSI-FEDERALAPPLICATIONS-PREFERRED2-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,BSI-FEDERALAPPLICATIONS-PREFERRED1-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,ANSSI,ACN,ACN-RECOMMENDED,ACN-COMPATIBILITY,ENISA,ENISA-DRAFT,CNSAV1,CNSAV1-EXCLUSIVE,CNSAV2,CNSAV2-TRANSITION-TRANSITIONEXCLUSIVE-EXCLUSIVE,AGID,AGID-MODERN,AGID-INTERMEDIATE,TLSREF,TLSREF-MODERN,TLSREF-INTERMEDIATE|ACN"
+    - ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_MANY: "O|list-multiple|[MANY] Multiple guidelines to evaluate against|NIST,NIST-CUSTOMERFACING-PREFERRED2,NIST-CUSTOMERFACING-PREFERRED1,NIST-CUSTOMERFACING-PREFERRED3,NIST-GOVERNMENTONLY-PREFERRED2,NIST-GOVERNMENTONLY-PREFERRED1,NIST-GOVERNMENTONLY-PREFERRED3,BSI,BSI-CUSTOMERFACING-FEDERALREQ-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,BSI-CUSTOMERFACING-PREFERRED2-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,BSI-CUSTOMERFACING-PREFERRED1-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,BSI-FEDERALAPPLICATIONS-FEDERALREQ-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,BSI-FEDERALAPPLICATIONS-PREFERRED2-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,BSI-FEDERALAPPLICATIONS-PREFERRED1-CLIENT_SERVERSIGNATURES-CERTIFICATESIGNATURES,ANSSI,ACN,ACN-RECOMMENDED,ACN-COMPATIBILITY,ENISA,ENISA-DRAFT,CNSAV1,CNSAV1-EXCLUSIVE,CNSAV2,CNSAV2-TRANSITION-TRANSITIONEXCLUSIVE-EXCLUSIVE,AGID,AGID-MODERN,AGID-INTERMEDIATE,TLSREF,TLSREF-MODERN,TLSREF-INTERMEDIATE,custom|ACN,NIST"
+    - ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_FILENAME: "O|text|[MANY] The name of the file injected in the template||custom_guidelines.json"
+    - ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_CUSTOM: "O|text|[MANY] Custom guidelines (comma-separated)||"
+    - ONEAPP_COMPLIANCE_EXTRA_SECURITY: "O|boolean|Enable enhanced security for multiple guidelines||NO"
+    - ONEAPP_COMPLIANCE_EXTRA_OPENSSL_VERSION: "O|list|Openssl version for the server ('ignore' is default)|ignore,0.9.6,0.9.6i,0.9.6j,0.9.6k,0.9.6l,0.9.6m,0.9.7,0.9.7b,0.9.7c,0.9.7d,0.9.7e,0.9.7f,0.9.7h,0.9.7i,0.9.7j,0.9.7k,0.9.7l,0.9.7m,0.9.8,0.9.8b,0.9.8c,0.9.8d,0.9.8e,0.9.8f,0.9.8h,0.9.8i,0.9.8j,0.9.8k,0.9.8l,0.9.8m,0.9.8m-beta1,0.9.8n,0.9.8o,0.9.8p,0.9.8q,0.9.8s,0.9.8u,0.9.8v,0.9.8w,0.9.8x,0.9.8y,0.9.8zb,0.9.8zc,0.9.8zd,0.9.8ze,0.9.8zf,0.9.8zh,1.0.0,1.0.0-beta1,1.0.0-beta2,1.0.0-beta3,1.0.0-beta4,1.0.0-beta5,1.0.0b,1.0.0c,1.0.0d,1.0.0e,1.0.0f,1.0.0h,1.0.0i,1.0.0j,1.0.0k,1.0.0l,1.0.0m,1.0.0n,1.0.0o,1.0.0p,1.0.0q,1.0.0s,1.0.1,1.0.1-beta1,1.0.1-beta2,1.0.1-beta3,1.0.1b,1.0.1c,1.0.1d,1.0.1e,1.0.1f,1.0.1h,1.0.1i,1.0.1j,1.0.1k,1.0.1l,1.0.1m,1.0.1n,1.0.1o,1.0.1p,1.0.1q,1.0.1s,1.0.1u,1.0.2,1.0.2-beta1,1.0.2-beta2,1.0.2-beta3,1.0.2b,1.0.2c,1.0.2d,1.0.2e,1.0.2f,1.0.2h,1.0.2i,1.0.2j,1.0.2k,1.0.2l,1.0.2m,1.0.2n,1.0.2o,1.0.2p,1.0.2q,1.0.2s,1.0.2u,1.1.0,1.1.0-pre1,1.1.0-pre2,1.1.0-pre3,1.1.0b,1.1.0c,1.1.0d,1.1.0e,1.1.0f,1.1.0h,1.1.0i,1.1.0j,1.1.0k,1.1.0l,1.1.1,1.1.1-pre1,1.1.1-pre2,1.1.1-pre3,1.1.1-pre4,1.1.1-pre5,1.1.1-pre6,1.1.1-pre7,1.1.1-pre8,1.1.1-pre9,1.1.1b,1.1.1c,1.1.1d,1.1.1e,1.1.1f,1.1.1h,1.1.1i,1.1.1j,1.1.1k,1.1.1l,1.1.1m,1.1.1n,1.1.1o,1.1.1p,1.1.1q,1.1.1s,1.1.1u,1.1.1v,1.1.1w,3.0.0,3.0.0-alpha1,3.0.0-alpha10,3.0.0-alpha11,3.0.0-alpha12,3.0.0-alpha13,3.0.0-alpha14,3.0.0-alpha15,3.0.0-alpha16,3.0.0-alpha17,3.0.0-alpha2,3.0.0-alpha3,3.0.0-alpha4,3.0.0-alpha5,3.0.0-alpha6,3.0.0-alpha7,3.0.0-alpha8,3.0.0-alpha9,3.0.0-beta1,3.0.0-beta2,3.0.1,3.0.10,3.0.11,3.0.12,3.0.13,3.0.14,3.0.15,3.0.16,3.0.17,3.0.18,3.0.19,3.0.2,3.0.20,3.0.3,3.0.4,3.0.5,3.0.7,3.0.8,3.0.9,3.1.0,3.1.0-alpha1,3.1.0-beta1,3.1.1,3.1.2,3.1.3,3.1.4,3.1.5,3.1.6,3.1.7,3.1.8,3.2.0,3.2.0-alpha1,3.2.0-alpha2,3.2.0-beta1,3.2.1,3.2.2,3.2.3,3.2.4,3.2.5,3.2.6,3.3.0,3.3.0-alpha1,3.3.0-beta1,3.3.1,3.3.2,3.3.3,3.3.4,3.3.5,3.3.6,3.3.7,3.4.0,3.4.0-alpha1,3.4.0-beta1,3.4.1,3.4.2,3.4.3,3.4.4,3.4.5,3.5.0,3.5.0-alpha1,3.5.0-beta1,3.5.1,3.5.2,3.5.3,3.5.4,3.5.5,3.5.6,3.5.7,3.5.8,3.6.0,3.6.0-alpha1,3.6.0-beta1,3.6.1,3.6.2,3.6.3,3.6.4,3.6.5,3.6.6,3.6.7,3.6.8,3.7.0,3.7.0-alpha1,3.7.0-beta1,3.7.1,3.7.2,3.7.3,3.7.4,3.7.5,3.7.6,3.7.7,3.8.0,3.8.0-alpha1,3.8.0-beta1,3.8.1,3.8.2,3.8.3,3.8.4,3.9.0,3.9.0-alpha1,3.9.0-beta1,3.9.1,3.9.2,3.9.3,3.9.4,3.9.5,3.9.6,3.9.7|ignore"
+inputs_order: ONEAPP_SCAN_ENDPOINT_TARGET_URL,ONEAPP_SCAN_ENDPOINT_RESOLVE_IP,ONEAPP_SCAN_VULN_MODULES,ONEAPP_STORAGE_S3_ENDPOINT,ONEAPP_STORAGE_S3_BUCKET,ONEAPP_STORAGE_S3_ACCESS_KEY,ONEAPP_STORAGE_S3_SECRET_KEY,ONEAPP_STORAGE_S3_CUSTOM_HOST_IP,ONEAPP_STORAGE_S3_REGION,ONEAPP_COMPLIANCE_CONFIG_ENABLED,ONEAPP_COMPLIANCE_CONFIG_COMPAREMANY,ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_ONE,ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_MANY,ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_FILENAME,ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_CUSTOM,ONEAPP_COMPLIANCE_EXTRA_SECURITY,ONEAPP_COMPLIANCE_EXTRA_OPENSSL_VERSION
+logo: logos/tlsassistant.png
