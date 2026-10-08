@@ -15,10 +15,15 @@ description: |-
   automating the execution of TLS scans and securely delivering the resulting
   PDF reports to any S3-compatible object storage to be easily retrieved.
 
-  TLSAssistant on OpenNebula can provide Public Administrations with an
-  automated, sovereign cloud solution to evaluate compliance with national
-  and international cybersecurity guidelines.
-  
+  Possible use cases:
+    1. A public administration from a given country wants to employ OpenNebula’s
+       easy-to-configure cloud capabilities while also being compliant with the
+       security requirements of its country of belonging. TLSAssistant’s internal
+       dataset allows to compare the current webserver configuration against one
+       or multiple (inter)national guidelines;
+    2. A cloud-native service wanting to periodically check the security of its
+       infrastructure.
+    
   **NOTE**: this appliance is highly configurable and requires the user
   to set parameters on instantiation. Please refer to the [documentation](https://github.com/OpenNebula/marketplace-community/blob/master/appliances/tlsassistant/README.md).
 

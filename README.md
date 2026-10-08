@@ -122,7 +122,7 @@ When the appliance bootstrap fails, an `ERROR_MESSAGE` is pushed to OpenNebula v
 
 ## Version History
 
-See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
+See [CHANGELOG.md](appliances/tlsassistant/CHANGELOG.md) for detailed version history.
 
 ## Tool's Features
 
