@@ -4,7 +4,7 @@
   :type: service
   :os:
     :type: linux
-    :base: ubuntu2204min
+    :base: ubuntu2404
   :arch: x86_64
   :format: qcow2
   :hypervisor: KVM
