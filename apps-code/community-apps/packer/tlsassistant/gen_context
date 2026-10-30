@@ -16,8 +16,17 @@ BEGIN { update = "PermitRootLogin yes" }
 ENDFILE { if (!found) print update }
 EOF
 
-systemctl reload sshd
+gawk -i inplace -f- /etc/ssh/sshd_config <<'EOF'
+BEGIN { update = "UsePAM no" }
+/^[#\s]*UsePAM\s/ { $0 = update; found = 1 }
+{ print }
+ENDFILE { if (!found) print update }
+EOF
 
+systemctl restart ssh
+
+systemctl stop systemd-resolved
+rm -f /etc/resolv.conf
 echo "nameserver 1.1.1.1" > /etc/resolv.conf
 MAINEND
 )
