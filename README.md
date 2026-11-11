@@ -6,6 +6,8 @@ This appliance wraps the official `stfbk/tlsassistant` Docker container, automat
 
 ## Quick Start
 
+> **Requirement:** OpenNebula 7.4.1 or later. Earlier versions keep only the last option of the multiple-choice inputs.
+
 1. **Deploy the Appliance:** Instantiate the template from Sunstone.
 2. **Provide your Target:** In the contextualization tab, enter the `TARGET_URL` (e.g., `www.yourcompany.com`) that you want the appliance to scan.
 3. **Configure S3 Storage:** Provide your `S3_ENDPOINT`, `S3_BUCKET`, and credentials.
@@ -35,7 +37,7 @@ The appliance is customizable via OpenNebula Contextualization.
 | `ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_MANY` | Ordered comma-separated guideline list used with `compare_many`. Use `custom` to inject the custom list. | `ACN,NIST` |
 | `ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_CUSTOM` | Custom guideline string substituted where `custom` appears in the many-guidelines list. | *(Empty)* |
 | `ONEAPP_COMPLIANCE_CONFIG_GUIDELINES_FILENAME` | Name of the [file injected](#file-injection-for-custom-guidelines) for the custom guidelines | `custom_guidelines.json` |
-| `ONEAPP_COMPLIANCE_EXTRA_SECURITY` | Adds `--security=true` when enabled. | `NO` |
+| `ONEAPP_COMPLIANCE_EXTRA_SECURITY` | Uses the security priority levels when enabled. When disabled, the appliance adds `--security=false` (legacy priority levels). | `NO` |
 | `ONEAPP_COMPLIANCE_EXTRA_OPENSSL_VERSION` | Adds `--openssl [version]` or `--ignore-openssl` (which defaults to the latest LTS) | `ignore` |
 
 ## Template Seeding
@@ -119,6 +121,7 @@ When the appliance bootstrap fails, an `ERROR_MESSAGE` is pushed to OpenNebula v
 | `4` | No report was found. The TLSAssistant container failed to generate a PDF. |
 | `5` | The OneGate CLI was not found or the context token is missing. Ensure the template has `TOKEN = "YES"` and OneGate is reachable. |
 | `6` | The TLSAssistant container exited with an error. The original container exit code is reported in the error message. |
+| `7` | No scan was selected. `ONEAPP_SCAN_VULN_MODULES` is `none` and the compliance scan is disabled. |
 
 ## Version History
 

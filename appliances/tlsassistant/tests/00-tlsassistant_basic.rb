@@ -6,6 +6,8 @@ describe 'TLSAssistant appliance' do
   include_context('vm_handler')
 
   it 'docker engine is installed and running' do
+    # docker can still be starting when SSH becomes reachable
+    @info[:vm].ssh("timeout 60 sh -c 'until systemctl -q is-active docker; do sleep 2; done'")
     result = @info[:vm].ssh('systemctl is-active docker')
     expect(result.exitstatus).to eq(0)
     expect(result.stdout.strip).to eq('active')

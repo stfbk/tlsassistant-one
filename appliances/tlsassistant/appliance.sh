@@ -64,6 +64,7 @@ error_codes[3]="Credentials for the s3 storage are invalid."
 error_codes[4]="No report found. Container failed."
 error_codes[5]="OneGate CLI not found or context token missing."
 error_codes[6]="Container exited with error code: %s"
+error_codes[7]="No scan selected. Select a vulnerability module or enable the compliance scan."
 
 # additional context for formatted error messages
 APP_ERROR_DETAIL=""
@@ -308,6 +309,12 @@ setup_app_container()
         fi
     fi
 
+    # "-m" needs one module or more
+    if [ "${#module_args[@]}" -eq 0 ]; then
+        msg info "No vulnerability module and no compliance scan selected"
+        return 7
+    fi
+
     local container_name="${ONEAPP_CONTAINER_NAME:-$DEFAULT_CONTAINER_NAME}"
     local container_volumes="${ONEAPP_CONTAINER_VOLUMES:-$DEFAULT_VOLUMES}"
     local -a volume_args=()
@@ -449,12 +456,9 @@ setup_app_container()
     # public url if the user allows unsigned access to the reports
     local public_url="${presigned_url%%\?*}"
     
-    # this is needed since onegate does not escape the '&' correctly
-    local clean_presigned_url=$(echo "$presigned_url" | sed 's/&/%26/g')
-    
-    msg info "Pushing URL ($clean_presigned_url) to OpenNebula via OneGate..."
+    msg info "Pushing URL ($presigned_url) to OpenNebula via OneGate..."
     if [ -x "$(command -v onegate)" ]; then
-        onegate vm update --data REPORT_URL="$clean_presigned_url"
+        onegate vm update --data REPORT_URL="$presigned_url"
         onegate vm update --data PUBLIC_URL="$public_url"
         msg info "Successfully pushed REPORT_URL to OneGate."
     else

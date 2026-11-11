@@ -11,4 +11,10 @@ mv /etc/one-appliance/net-99-report-ready      /etc/one-context.d/
 chown root:root /etc/one-context.d/*
 chmod u=rwx,go=rx /etc/one-context.d/*
 
+# Remove netplan configs created by NetworkManager during the Packer build.
+# They use renderer NetworkManager while one-context uses networkd, and the
+# two then compete for eth0 at boot and the VM can start with no route.
+rm -f /etc/netplan/90-NM-*.yaml
+rm -f /etc/netplan/50-one-context.yaml
+
 sync
